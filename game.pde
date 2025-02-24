@@ -1,34 +1,27 @@
-// Game states
+// game states
 final int TITLE = 0;
 final int GAME = 1;
 int gameState = TITLE;
-
-// Font
+// font
 PFont customFont;
-
-// Global fade states
+// global fade states
 final int FADE_TO_WHITE = 0;
 final int SHOW_DAY_TEXT = 1;
 final int SHOW_FRAMES = 2;
 int fadeState = FADE_TO_WHITE;
 
-// Grey rectangle (duvet) properties
+// grey rectangle (duvet) properties
 float greyRectY = 0;
 float greyRectHeight = 0;
 float maxRectHeight;
 
-// Add these variables at the top with other globals
 boolean showDoorCloseup = false;
 float noKeyMessageAlpha = 0;
-
-// Add with other globals near the top
 float doorCloseupAlpha = 255;
-
-// Add these near the top with other global variables
 float fadeOutAlpha = 0;
 float fadeInAlpha = 255;
 boolean isTransitioningToL2 = false;
-final float FADE_SPEED = 0.08;  // Adjust this to control fade speed
+final float FADE_SPEED = 0.08;
 
 void setup() {
   size(1200, 600);
@@ -36,7 +29,6 @@ void setup() {
   textAlign(LEFT, CENTER);
   rectMode(CENTER);
   
-  // Remove bed Y initialization that was overriding our value
   maxRectHeight = height - 20;
   greyRectY = height/2;
   greyRectHeight = height/2 - 10;
@@ -45,15 +37,14 @@ void setup() {
   initializeFont();
   loadImages();
   initializeMovement();
-  resetDoor();  // Add this line
+  resetDoor();
 }
 
-// Add this new function
 void resetDoor() {
   doorAngle = 0;
   doorScale = 1.0;
   isDoorAnimating = false;
-  doorCloseupAlpha = 255;  // Add this line to reset the fade
+  doorCloseupAlpha = 255;
 }
 
 void draw() {
@@ -68,7 +59,7 @@ void draw() {
       drawGameScreen();
     }
     
-    // Modified level 2 transition
+    // modified level 2 transition
     if (transitionToLevel2) {
       isTransitioningToL2 = true;
       fill(255, fadeOutAlpha);
@@ -83,7 +74,7 @@ void draw() {
   } else if (gameState == GAME_L2) {
     drawLevel2();
     
-    // Add fade-in effect for level 2
+    // add fade-in effect for level 2
     if (isTransitioningToL2) {
       fill(255, fadeInAlpha);
       rect(width/2, height/2, width, height);
@@ -118,14 +109,14 @@ void stop() {
 }
 
 void drawGameScreen() {
-  // Reset door on first entry to game screen
+  // reset door on first entry to game screen
   if (fadeState == SHOW_FRAMES && !duvetFullyDown) {
     resetDoor();
   }
   
   background(255);
   
-  // Draw panels
+  // draw panels
   noFill();
   stroke(0);
   strokeWeight(2);
@@ -138,7 +129,7 @@ void drawGameScreen() {
     drawPlayer();
     drawClickEffect();
     
-    // Check if player is near door
+    // check if player is near door
     float wallY = height/2 - 70;
     float doorCenterX = 150;
     float doorCenterY = wallY - 85;
@@ -146,7 +137,7 @@ void drawGameScreen() {
     showDoorCloseup = distToDoor <= 50;
   }
 
-  // Draw right panel content
+  // draw right panel content
   if (!duvetFullyDown || rightPanelAlpha > 0) {
     drawGirlAndDuvet();
   } else if (showDoorCloseup) {
@@ -155,7 +146,7 @@ void drawGameScreen() {
     drawPillowCloseup();
   }
 
-  // Draw fading "no key" message
+  // draw fading "no key" message
   if (noKeyMessageAlpha > 0) {
     fill(0, noKeyMessageAlpha);
     textSize(24);
@@ -171,23 +162,23 @@ void drawDoorCloseup() {
   float rightPanelCenterY = height/2;
   float rightPanelWidth = 590;
   
-  // Calculate height based on original aspect ratio (1022:1420)
+  // calculate height based on original aspect ratio (1022:1420)
   float aspectRatio = 1420.0 / 1022.0;
   float imageWidth = rightPanelWidth - 40;
   float imageHeight = imageWidth * aspectRatio;
   
-  // Scale down if height exceeds panel height
+  // scale down if height exceeds panel height
   if (imageHeight > height - 40) {
     imageHeight = height - 40;
     imageWidth = imageHeight / aspectRatio;
   }
   
-  // Add fade effect
+  // add fade effect
   tint(255, doorCloseupAlpha);
   image(doorCloseImage, rightPanelCenterX, rightPanelCenterY, imageWidth, imageHeight);
   noTint();
   
-  // Fade out after clicking with key
+  // fade out after clicking with key
   if (isDoorAnimating && keyCollected) {
     doorCloseupAlpha = lerp(doorCloseupAlpha, 0, 0.1);
   }
@@ -223,7 +214,7 @@ void handleGameScreenClick() {
   float rightPanelCenterX = 900;
   float rightPanelCenterY = height/2;
   
-  // Check for key collection
+  // check for key collection
   if (showKey && !keyCollected && 
       mouseX > rightPanelCenterX - 30 && mouseX < rightPanelCenterX + 30 &&
       mouseY > rightPanelCenterY - 45 && mouseY < rightPanelCenterY - 15) {
@@ -263,26 +254,26 @@ void drawGirlAndDuvet() {
   float aspect = 1550.0 / 1140.0;
   float imgHeight = panelW / aspect;
   
-  // Draw girl with fade
+  // draw girl with fade
   tint(255, rightPanelAlpha);
   imageMode(CORNER);
   image(girlImage, panelX, 10, panelW, imgHeight);
   noTint();
   
-  // Draw grey rectangle (duvet)
+  // draw grey rectangle (duvet)
   noStroke();
   fill(128, rightPanelAlpha);
   rectMode(CORNER);
   rect(panelX, greyRectY, panelW, maxRectHeight - greyRectY);
   
-  // Draw handle with fade
+  // draw handle with fade
   stroke(0, rightPanelAlpha);
   strokeWeight(2);
   fill(180, rightPanelAlpha);
   rectMode(CENTER);
   rect(panelX + panelW/2, greyRectY, 60, 20);
   
-  // Fade out right panel when duvet is down
+  // fade out right panel when duvet is down
   if (duvetFullyDown && rightPanelAlpha > 0) {
     rightPanelAlpha -= 5;
   }
@@ -291,29 +282,29 @@ void drawGirlAndDuvet() {
 void drawGameObjects() {
   imageMode(CENTER);
   
-  // Draw wall line
+  // draw wall line
   stroke(0);
   strokeWeight(4);
-  float wallY = height/2 - 70;  // Matched to movement constraints
+  float wallY = height/2 - 70;
   line(5, wallY, 595, wallY);
   
-  // Draw door
+  // draw door
   pushMatrix();
-  translate(150, wallY - 85);  // Door position relative to wall line
+  translate(150, wallY - 85);
   
-  // Door frame
+  // door frame
   stroke(0);
   strokeWeight(3);
   noFill();
   rect(0, 0, doorWidth + 10, doorHeight + 10);
   
-  // Only animate if we have the key and clicked the door
+  // only animate if we have the key and clicked the door
   if (isDoorAnimating && keyCollected) {
     doorScale = lerp(doorScale, 0, 0.1);
     doorAngle = lerp(doorAngle, 360, 0.2);
     
     if (doorScale < 0.1) {
-      transitionToLevel2 = true;  // Start transition when door is fully gone
+      transitionToLevel2 = true;
     }
   }
   
@@ -321,25 +312,25 @@ void drawGameObjects() {
   rotate(radians(doorAngle));
   scale(doorScale);
   
-  // Door
+  // door
   stroke(0);
   strokeWeight(2);
   fill(255);
   rect(0, 0, doorWidth, doorHeight);
   
-  // Door details
+  // door details
   line(-doorWidth/4, -doorHeight/4, doorWidth/4, -doorHeight/4);
   line(-doorWidth/4, 0, doorWidth/4, 0);
   line(-doorWidth/4, doorHeight/4, doorWidth/4, doorHeight/4);
   
-  // Door handle
+  // door handle
   fill(0);
   ellipse(20, 0, 8, 8);
   
   popMatrix();
   popMatrix();
   
-  // Draw bed
+  // draw bed
   if (pillowClicked) {
     image(noPillowImage, bedX, bedY, bedWidth, bedHeight);
   } else {
@@ -353,13 +344,13 @@ void drawPillowCloseup() {
   float rightPanelCenterY = height/2;
   float rightPanelWidth = 590;
   
-  // Draw duvet
+  // draw duvet
   float duvetAspect = (float)duvetCloseImage.width / duvetCloseImage.height;
   float duvetWidth = rightPanelWidth - 40;
   float duvetHeight = duvetWidth / duvetAspect;
   image(duvetCloseImage, rightPanelCenterX, rightPanelCenterY + 100, duvetWidth, duvetHeight);
   
-  // Draw pillow if not clicked or still fading
+  // draw pillow if not clicked or still fading
   if (!pillowClicked || pillowAlpha > 0) {
     float pillowAspect = (float)pillowCloseImage.width / pillowCloseImage.height;
     float pillowWidth = rightPanelWidth - 80;
@@ -374,7 +365,7 @@ void drawPillowCloseup() {
     }
   }
   
-  // Draw key if pillow is gone
+  // draw key if pillow is gone
   if (pillowClicked && pillowAlpha <= 0) {
     showKey = true;
     if (!keyCollected) {
@@ -385,7 +376,7 @@ void drawPillowCloseup() {
     }
   }
   
-  // Show collection text
+  // show collection text
   if (keyCollected) {
     fill(0);
     textSize(24);
@@ -404,7 +395,7 @@ void mouseDragged() {
       playerY = bedY;
       targetX = playerX;
       targetY = playerY;
-      rightPanelAlpha = 255; // Reset alpha before fade
+      rightPanelAlpha = 255;
     }
   }
 }
@@ -420,14 +411,14 @@ void resetLevel2() {
     doorStates[i] = false;
   }
   
-  // Add music transition
+  // add music transition
   level2Music.play();
   level2Music.loop();
   level2Music.amp(0);
   musicVolume = 0.0;
   isFadingMusic = true;
   
-  // Reset fade variables
+  // reset fade variables
   fadeOutAlpha = 0;
   fadeInAlpha = 255;
 }

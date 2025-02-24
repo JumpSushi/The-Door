@@ -11,7 +11,7 @@ float messageAlpha = 0;
 float levelTimer = 60;
 float doorCloseTimer = -1;
 boolean timerActive = false;
-color[] doorGlowColors = {#FFFF00, #FFFF00, #FFFF00, #FFFF00}; // Default yellow for all doors
+color[] doorGlowColors = {#FFFF00, #FFFF00, #FFFF00, #FFFF00}; // default yellow for all doors
 
 void drawLevel2() {
   if (doorSequence == null) {
@@ -58,7 +58,7 @@ void drawLevel2() {
     puzzleCompletionAlpha = lerp(puzzleCompletionAlpha, 255, 0.05);
     
     if (puzzleCompletionAlpha > 250) {
-      gameState = ENDING;
+      drawEndingSequence();
     }
   }
 }
@@ -73,7 +73,7 @@ void handleLevel2Click() {
       if (i == doorSequence[currentSequenceIndex]) {
         doorStates[i] = true;
         doorGlowAlpha[i] = 255;
-        doorGlowColors[i] = #FFFF00; // Yellow for correct
+        doorGlowColors[i] = #FFFF00; // yellow for correct
         currentSequenceIndex++;
         keySound.play();
         
@@ -86,11 +86,11 @@ void handleLevel2Click() {
         }
       } else {
         doorGlowAlpha[i] = 255;
-        doorGlowColors[i] = #FF0000; // Red for incorrect
+        doorGlowColors[i] = #FF0000; // red for incorrect
         messageAlpha = 255;
         showSuccessMessage = false;
         closeAllDoors();
-        regeneratePuzzle(); // Add this line to regenerate on failure
+        regeneratePuzzle(); // add this line to regenerate on failure
       }
     }
   }
@@ -123,7 +123,7 @@ void drawMainPuzzleScene() {
   
   textAlign(LEFT, TOP);
   textSize(24);
-  fill(0);  // Always full opacity black
+  fill(0);  // always full opacity black
   text(currentSequenceIndex + "/10", 50, 30);
   
   for (int i = 0; i < doorPositions.length; i++) {
@@ -131,7 +131,7 @@ void drawMainPuzzleScene() {
       noStroke();
       for (int r = 100; r > 0; r -= 20) {
         float alpha = (doorGlowAlpha[i] * r/100) * 0.5;
-        fill(doorGlowColors[i], alpha); // Use the door's glow color
+        fill(doorGlowColors[i], alpha); // use the door's glow color
         ellipse(doorPositions[i], wallY - 85, r, r);
       }
       doorGlowAlpha[i] = lerp(doorGlowAlpha[i], 0, 0.1);
@@ -145,12 +145,12 @@ void drawHintScene() {
   rect(300, height/2, 590, height - 20);
   
   if (currentSequenceIndex < doorSequence.length) {
-    float startX = 75;  // Changed from 100 to 75
+    float startX = 75;  // changed from 100 to 75
     float spacing = 50;
     float centerY = height/2;
     float symbolSize = 30;
     
-    // Draw connecting line
+    // draw connecting line
     stroke(0, 30);
     strokeWeight(1);
     line(startX, centerY, startX + spacing * 9, centerY);
@@ -159,14 +159,14 @@ void drawHintScene() {
       float x = startX + (i * spacing);
       float y = centerY;
       
-      // Calculate opacity
+      // calculate opacity
       float symbolAlpha;
       if (i < currentSequenceIndex) {
-        symbolAlpha = 40;  // Past symbols are very faint
+        symbolAlpha = 40;  // past symbols are very faint
       } else if (i == currentSequenceIndex) {
-        symbolAlpha = 255; // Current symbol is fully visible
+        symbolAlpha = 255; // current symbol is fully visible
       } else {
-        symbolAlpha = 120; // Future symbols are partially visible
+        symbolAlpha = 120; // future symbols are partially visible
       }
       
       noFill();
@@ -174,23 +174,23 @@ void drawHintScene() {
       stroke(0, symbolAlpha);
       
       switch(doorSequence[i]) {
-        case 0: // Empty circle
+        case 0: // empty circle
           ellipse(x, y, symbolSize, symbolSize);
           break;
-        case 1: // Half circle
+        case 1: // half circle
           arc(x, y, symbolSize, symbolSize, -HALF_PI, HALF_PI);
           break;
-        case 2: // Circle with line
+        case 2: // circle with line
           ellipse(x, y, symbolSize, symbolSize);
           line(x - symbolSize/2, y, x + symbolSize/2, y);
           break;
-        case 3: // Filled circle
+        case 3: // filled circle
           fill(0, symbolAlpha);
           ellipse(x, y, symbolSize, symbolSize);
           break;
       }
       
-      // Draw small dot to mark current position
+      // draw small dot to mark current position
       if (i == currentSequenceIndex) {
         fill(0, 255);
         noStroke();
@@ -251,8 +251,8 @@ void regeneratePuzzle() {
 
 void resetLevel() {
   closeAllDoors();
-  regeneratePuzzle(); // Also regenerate when resetting level
-  // Reset glow colors to yellow
+  regeneratePuzzle(); // regen when level reset
+  // reset glow colors to yellow
   for (int i = 0; i < doorGlowColors.length; i++) {
     doorGlowColors[i] = #FFFF00;
   }
@@ -292,17 +292,41 @@ int[] generateRandomSequence() {
     int newValue;
     do {
       newValue = int(random(4));
-      // Keep generating new values if it's the same as the previous one
-      // (except for the last element which should match the first)
     } while (i > 0 && i != 9 && newValue == sequence[i-1]);
     
     sequence[i] = newValue;
   }
   
-  // Ensure first and last match
   sequence[9] = sequence[0];
-  // Keep position 4 matching position 3
   sequence[4] = sequence[3];
   
   return sequence;
+}
+
+void drawEndingSequence() {
+  background(255);
+  
+  // draw the thank you text
+  textAlign(CENTER, CENTER);
+  textSize(48);
+  fill(0, textFadeAlpha);
+  text("Thank you for playing", width/2, height/2 - 50);
+  
+  // draw "the door" text
+  textSize(36);
+  text("The Door", width/2 - 50, height/2 + 50);
+  
+  // door
+  stroke(0, textFadeAlpha);
+  strokeWeight(2);
+  noFill();
+  float doorX = width/2 + 80;
+  float doorY = height/2 + 50;
+  rect(doorX - 20, doorY - 30, 40, 60);  // door frame
+  ellipse(doorX + 10, doorY, 5, 5);      // door handle
+  
+  // fade in the text and door
+  if (textFadeAlpha < 255) {
+    textFadeAlpha = lerp(textFadeAlpha, 255, 0.02);
+  }
 }
