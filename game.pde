@@ -4,17 +4,16 @@ final int GAME = 1;
 int gameState = TITLE;
 // font
 PFont customFont;
-// global fade states
+// global fade
 final int FADE_TO_WHITE = 0;
 final int SHOW_DAY_TEXT = 1;
 final int SHOW_FRAMES = 2;
 int fadeState = FADE_TO_WHITE;
-
 // grey rectangle (duvet) properties
 float greyRectY = 0;
 float greyRectHeight = 0;
 float maxRectHeight;
-
+//other basically useless but necessary variables
 boolean showDoorCloseup = false;
 float noKeyMessageAlpha = 0;
 float doorCloseupAlpha = 255;
@@ -109,14 +108,12 @@ void stop() {
 }
 
 void drawGameScreen() {
-  // reset door on first entry to game screen
   if (fadeState == SHOW_FRAMES && !duvetFullyDown) {
     resetDoor();
   }
   
   background(255);
   
-  // draw panels
   noFill();
   stroke(0);
   strokeWeight(2);
@@ -128,8 +125,6 @@ void drawGameScreen() {
     updateMovement();
     drawPlayer();
     drawClickEffect();
-    
-    // check if player is near door
     float wallY = height/2 - 70;
     float doorCenterX = 150;
     float doorCenterY = wallY - 85;

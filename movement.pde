@@ -6,8 +6,6 @@ int currentFrame = 0;
 int frameDelay = 12;
 int movementFrameCount = 0;
 boolean isFacingLeft = false;
-
-// Click feedback properties
 float clickAlpha = 0;
 float clickX = 0;
 float clickY = 0;
@@ -32,8 +30,8 @@ void updateMovement() {
   float dy = targetY - playerY;
   float distance = sqrt(dx*dx + dy*dy);
   
-  // Update facing direction based on movement
-  if (abs(dx) > 0.1) {  // Only update direction if there's significant horizontal movement
+  // facing direction (left or right)
+  if (abs(dx) > 0.1) {  /
     isFacingLeft = dx < 0;
   }
   
@@ -62,10 +60,10 @@ void updateMovement() {
     nextY - collisionMargin < bedY + bedHeight/2;
   
   if (!collidesWithBed) {
-    // Panel boundaries
+    // panel bounds
     float leftBound = 300 - (590/2) + 30;
     float rightBound = 300 + (590/2) - 30;
-    float topBound = 100;  // Adjusted even higher to allow movement near bed
+    float topBound = 100; 
     float bottomBound = height - 60;
     
     playerX = constrain(nextX, leftBound, rightBound);
@@ -90,7 +88,7 @@ void drawPlayer() {
   if (playerX >= 5 && playerX <= 595) {
     pushMatrix();
     translate(playerX, playerY);
-    scale(isFacingLeft ? -1 : 1, 1);  // Flip horizontally if facing left
+    scale(isFacingLeft ? -1 : 1, 1);  // flip horz 
     image(playerSprites[isMoving ? currentFrame : 2], 
           0, 0, 120, 120);  // Draw at 0,0 since we're using translate
     popMatrix();
@@ -102,7 +100,7 @@ void drawPlayer() {
 void handleMouseClick() {
   float leftBound = 300 - (590/2) + 30;
   float rightBound = 300 + (590/2) - 30;
-  float topBound = height/2 - 70;  // This is where the wall line should be
+  float topBound = height/2 - 70;  // wall line location
   float bottomBound = height - 60;
 
   if (mouseX > leftBound && mouseX < rightBound &&
@@ -147,7 +145,7 @@ boolean canReachDirectly(float x, float y) {
            y - margin < bedY + bedHeight/2);
 }
 
-PVector findNearestValidPoint(float x, float y) {
+PVector findNearestValidPoint(float x, float y) { //written by chatgpt
   float maxRadius = 100;
   float step = 5;
   

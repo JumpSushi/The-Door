@@ -42,7 +42,6 @@ void handleTitleScreenClick() {
       playerY = height/2;
       targetX = playerX;
       targetY = playerY;
-      
       gameMusic.play();
       gameMusic.loop();
       gameMusic.amp(0);
@@ -70,17 +69,12 @@ void drawWallAndDoor() {
   stroke(0);
   strokeWeight(4);
   line(0, doorY + doorHeight/2 + 10, 600, doorY + doorHeight/2 + 10);
-  
-  // Door
   pushMatrix();
   translate(400, doorY);
-  
-  // Door frame
   stroke(0);
   strokeWeight(3);
   noFill();
   rect(0, 0, doorWidth + 10, doorHeight + 10);
-  
   if (isDoorOpening) {
     doorScale = lerp(doorScale, 0, 0.1);
     doorAngle = lerp(doorAngle, 360, 0.2);

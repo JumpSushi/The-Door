@@ -90,7 +90,7 @@ void handleLevel2Click() {
         messageAlpha = 255;
         showSuccessMessage = false;
         closeAllDoors();
-        regeneratePuzzle(); // add this line to regenerate on failure
+        regeneratePuzzle(); 
       }
     }
   }
@@ -145,7 +145,7 @@ void drawHintScene() {
   rect(300, height/2, 590, height - 20);
   
   if (currentSequenceIndex < doorSequence.length) {
-    float startX = 75;  // changed from 100 to 75
+    float startX = 75;  
     float spacing = 50;
     float centerY = height/2;
     float symbolSize = 30;

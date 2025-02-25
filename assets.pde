@@ -6,10 +6,10 @@ PImage pillowCloseImage;
 PImage duvetCloseImage;
 PImage noPillowImage;
 PImage keyImage;
-PImage doorCloseImage;  // Add this line
+PImage doorCloseImage; 
 
 void loadImages() {
-  // Load animation frames
+  // animation frames for the player walking (add credit later )
   for (int i = 0; i < 6; i++) {
     playerSprites[i] = loadImage(i + ".png");
   }
@@ -20,7 +20,7 @@ void loadImages() {
   duvetCloseImage = loadImage("duvetclose.png");
   noPillowImage = loadImage("nopillow.png");
   keyImage = loadImage("key.jpg");
-  doorCloseImage = loadImage("doorcloseup.png");  // Add this line
+  doorCloseImage = loadImage("doorcloseup.png");  
 }
 
 void initializeFont() {
